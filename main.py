@@ -8,12 +8,19 @@ import re
 if __name__ == '__main__':
     file = open("inputs.txt", "r")
     lines = file.readlines()
-    maxSize = len(lines[0])
-    print(maxSize)
-    trees = 0
+    maxSize = len(lines[0]) - 1
+    trees = x = 0
+    found = "-"
 
     for line in lines:
-        print(line)
+        if x >= maxSize:
+            x -= maxSize
+        if line[x] == '#':
+            trees += 1
+        found = line[x]
+        x += 3
+
+    print(trees)
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

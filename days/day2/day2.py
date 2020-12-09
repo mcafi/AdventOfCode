@@ -1,5 +1,6 @@
 # DAY 2
-# Part 1, check if the
+# Part 1: check if the password contains an amount of the same char between the given intervals
+# Part 2: check if the password contains if and only if one of the char in the given indexes
 
 import re
 
@@ -14,7 +15,7 @@ if __name__ == '__main__':
     file = open("./day2.txt", "r")
     lines = file.readlines()
 
-    # part 1
+    # Part 1
     valid = 0
     for line in lines:
         parser = re.match(r'(\d+)-(\d+) ([a-z]): ([a-z]+)', line)
@@ -27,7 +28,7 @@ if __name__ == '__main__':
             valid += 1
     print(valid)
 
-    # part 2
+    # Part 2
     valid = 0
     for line in lines:
         parser = re.match(r'(\d+)-(\d+) ([a-z]): ([a-z]+)', line)
