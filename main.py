@@ -11,3 +11,9 @@ if __name__ == '__main__':
     file = open("inputs.txt", "r")
     lines = file.readlines()
 
+    bags = {}
+    for line in lines:
+        parseLine = re.match(r'(\w+ \w+) bags contain (.*)', line)
+        name = parseLine.group(1)
+        content = parseLine.group(2)
+        print(name, content)
