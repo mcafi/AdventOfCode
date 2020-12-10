@@ -47,7 +47,7 @@ def checkvalidpassport(passport):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    file = open("day5.txt", "r")
+    file = open("./day4.txt", "r")
     lines = file.readlines()
     values = []
 

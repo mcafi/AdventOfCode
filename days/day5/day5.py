@@ -6,7 +6,7 @@ import re
 import math
 
 if __name__ == '__main__':
-    file = open("day5.txt", "r")
+    file = open("./day5.txt", "r")
     lines = file.readlines()
 
     # Part 1
