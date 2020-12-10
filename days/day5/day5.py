@@ -1,16 +1,15 @@
-# This is a sample Python script.
+# DAY 5
+# Part 1: find the highest seat ID on the plane
+# Part 2: find the missing ID between the seats
+
 import re
 import math
 
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("day5.txt", "r")
     lines = file.readlines()
 
+    # Part 1
     seats = []
     highestId = 0
     for line in lines:
@@ -28,6 +27,7 @@ if __name__ == '__main__':
             highestId = seatId
     print(highestId)
 
+    # Part 2
     seats.sort()
     firstSeat = seats[0]
     for seat in seats:
