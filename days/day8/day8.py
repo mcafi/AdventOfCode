@@ -1,16 +1,15 @@
-# This is a sample Python script.
+# DAY 8
+# Part 1: find the acc value when reaching an instruction for the second time
+# Part 2: find the acc value after fixing one of the jmp or nop
+
 import re
-import math
-
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("./day8.txt", "r")
     lines = file.readlines()
 
+    # Part 1
     acc = 0
     executed = []
     i = 0
@@ -30,6 +29,7 @@ if __name__ == '__main__':
             i += 1
     print(acc)
 
+    # Part 2
     acc = 0
     executed = []
     fixes = []
@@ -52,7 +52,6 @@ if __name__ == '__main__':
             if i in fixes or currentFix is not None:
                 i += value
             else:
-                print("fixing... ", i)
                 currentFix = i
                 fixes.append(i)
                 i += 1
@@ -60,7 +59,6 @@ if __name__ == '__main__':
             if i in fixes or currentFix is not None:
                 i += 1
             else:
-                print("fixing... ", i)
                 currentFix = i
                 fixes.append(i)
                 i += value
