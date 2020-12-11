@@ -1,23 +1,22 @@
-# This is a sample Python script.
-import re
-import math
+# DAY 7
+# Part 1: count the bags which eventually contain a "shiny gold" bag
 
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import re
 
 totalBags = {}
 
 
-def containsBag(bagList, bag):
-    bags = totalBags[bagList]
-    contains = False
-    if bags.count(bag) > 0:
-        return True
+# for part 1, count the "shiny gold" bags inside a bag
+def countShinyGold(bag):
+    bags = totalBags[bag]
+    count = 0
+    count += bags.count("shiny gold")
     for singleBag in list(set(bags)):
-        containsBag(singleBag, bag)
-    return contains
+        count += countShinyGold(singleBag) * bags.count(singleBag)
+    return count
 
 
+# for part 2, count the total bags inside a bag
 def countTotalBags(bag):
     bags = totalBags[bag]
     count = 0
@@ -29,9 +28,10 @@ def countTotalBags(bag):
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("day7.txt", "r")
     lines = file.readlines()
 
+    # initial setup, common for both parts
     bagsWithGold = 0
     for line in lines:
         parseLine = re.match(r'(\w+ \w+) bags contain (.*)', line)
@@ -48,13 +48,11 @@ if __name__ == '__main__':
                     bagContent.append(parseContentString.group(2))
         totalBags[name] = bagContent
 
-    currentBag = 0
+    # Part 1
     for bag in totalBags:
-        currentBag += 1
-        print("Valigia ", currentBag, " di ", len(totalBags), "...")
-        if containsBag(bag, "shiny gold"):
+        if countShinyGold(bag) > 0:
             bagsWithGold += 1
-
     print(bagsWithGold)
 
+    # Part 2
     print(countTotalBags("shiny gold"))
