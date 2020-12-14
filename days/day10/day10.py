@@ -1,10 +1,9 @@
-# This is a sample Python script.
-import re
-import math
+# DAY 10
+# Part 1: find the number of 1-jumps and 3-jumps to connect the device with the adapters
+# Part 2: find the total number of possible connections using all my adapters
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("./day10.txt", "r")
     lines = file.readlines()
 
     adapters = [0]
@@ -12,15 +11,18 @@ if __name__ == '__main__':
         adapters.append(int(line))
     adapters.sort()
 
+    # considering the outlet (0) and my device as adapters since they'll connect
+
     last = adapters[len(adapters) - 1]
-
     device = last + 3
+    adapters.append(device)
 
+    # Part 1
     jump1 = 0
-    jump3 = 1  # i know the last jump is +3
+    jump3 = 0
     curr = 0
 
-    while curr != last:
+    while curr != device:
         if curr + 1 in adapters:
             jump1 += 1
             curr += 1
@@ -30,6 +32,7 @@ if __name__ == '__main__':
 
     print(jump1 * jump3)
 
+    #Part 2
     choices = []
     consecutive = 1
     for a in adapters:
