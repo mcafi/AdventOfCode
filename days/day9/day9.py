@@ -1,6 +1,8 @@
 # DAY 9
-# Part 1: find the
+# Part 1: find the first number which isn't sum of 2 of the 25 previous numbers
+# Part 2: find some contiguous numbers which give in sum the number found in part 1
 
+# function for part 1
 def hasSum(group, number):
     found = False
     for i in range(len(group)):
@@ -10,6 +12,7 @@ def hasSum(group, number):
     return found
 
 
+# function for part 2
 def findContinuos(list, number):
     for i in range(len(list)):
         x = 0
@@ -35,6 +38,7 @@ if __name__ == '__main__':
     for line in lines:
         numbers.append(int(line))
 
+    # Part 1
     preamble = 25
     group = numbers[0:preamble]
     error = 0
@@ -46,4 +50,5 @@ if __name__ == '__main__':
         group.pop(0)
     print(error)
 
+    # Part 2
     print(findContinuos(numbers, error))

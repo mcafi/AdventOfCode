@@ -1,10 +1,13 @@
-# This is a sample Python script.
+# DAY 11
+# Part 1: arrange people in seats checking the 8 surrounding seats
+# Part 2: arrange people in seats checking the 8 directions around each seat
+
 import re
-import math
 
 seats = []
 
 
+# function for part 1
 def occupiednearby(row, col):
     count = 0
     # top
@@ -41,6 +44,8 @@ def occupiednearby(row, col):
             count += 1
     return count
 
+
+# function for part 2
 def occupieddiag(row, col):
     count = 0
     # top
@@ -139,9 +144,10 @@ def occupieddiag(row, col):
 
 
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("day11.txt", "r")
     lines = file.readlines()
 
+    # Part 1
     for line in lines:
         seats.append(re.findall(r'[\.L]', line))
 
@@ -170,6 +176,7 @@ if __name__ == '__main__':
                 occupied += 1
     print(occupied)
 
+    # Part 2
     seats = []
     toChange = []
     for line in lines:
