@@ -2,50 +2,116 @@
 import re
 import math
 
-# Press the green button in the gutter to run the script.
+seats = []
+toChange = []
+
+
+def surroundedbyfree(row, col):
+    # top
+    if row > 0:
+        if seats[row - 1][col] == "#":
+            return False
+    # left
+    if col > 0:
+        if seats[row][col-1] == "#":
+            return False
+    # bottom
+    if row < len(seats) - 1:
+        if seats[row+1][col] == "#":
+            return False
+    # right
+    if col < len(seats[0]) - 1:
+        if seats[row][col+1] == "#":
+            return False
+    # top left
+    if row > 0 and col > 0:
+        if seats[row-1][col-1] == "#":
+            return False
+    # top right
+    if row > 0 and col < len(seats[0]) - 1:
+        if seats[row-1][col+1] == "#":
+            return False
+    # bottom left:
+    if row < len(seats) - 1 and col > 0:
+        if seats[row+1][col-1] == "#":
+            return False
+    # bottom right:
+    if row < len(seats) - 1 and col < len(seats[0]) - 1:
+        if seats[row+1][col+1] == "#":
+            return False
+    return True
+
+
+def surroundedbyocc(row, col):
+    x = 0
+    # top
+    if row > 0:
+        if seats[row-1][col] == "#":
+            x += 1
+    # left
+    if col > 0:
+        if seats[row][col-1] == "#":
+            x += 1
+    # bottom
+    if row < len(seats) - 1:
+        if seats[row+1][col] == "#":
+            x += 1
+    # right
+    if col < len(seats[0]) - 1:
+        if seats[row][col+1] == "#":
+            x += 1
+    # top left
+    if row > 0 and col > 0:
+        if seats[row-1][col-1] == "#":
+            x += 1
+    # top right
+    if row > 0 and col < len(seats[0]) - 1:
+        if seats[row-1][col+1] == "#":
+            x += 1
+    # bottom left:
+    if row < len(seats) - 1 and col > 0:
+        if seats[row+1][col-1] == "#":
+            x += 1
+    # bottom right:
+    if row < len(seats) - 1 and col < len(seats[0]) - 1:
+        if seats[row+1][col+1] == "#":
+            x += 1
+    if x >= 4:
+        return True
+    else:
+        return False
+
+
 if __name__ == '__main__':
     file = open("inputs.txt", "r")
     lines = file.readlines()
 
-    adapters = [0]
     for line in lines:
-        adapters.append(int(line))
-    adapters.sort()
+        seats.append(re.findall(r'[\.L]', line))
 
-    last = adapters[len(adapters) - 1]
-
-    device = last + 3
-
-    jump1 = 0
-    jump3 = 1  # i know the last jump is +3
-    curr = 0
-
-    while curr != last:
-        if curr + 1 in adapters:
-            jump1 += 1
-            curr += 1
+    while True:
+        for s in seats:
+            print(" ".join(s))
+        print("\n----------\n")
+        for i in range(len(seats)):
+            for j in range(len(seats[i])):
+                if seats[i][j] == "L" and surroundedbyfree(i, j):
+                    toChange.append([i, j])
+                elif seats[i][j] == "#" and surroundedbyocc(i, j):
+                    toChange.append([i, j])
+        if len(toChange) > 0:
+            for c in toChange:
+                if seats[c[0]][c[1]] == "L":
+                    seats[c[0]][c[1]] = "#"
+                elif seats[c[0]][c[1]] == "#":
+                    seats[c[0]][c[1]] = "L"
+            toChange = []
         else:
-            jump3 += 1
-            curr += 3
+            break
 
-    print(jump1 * jump3)
-
-    choices = []
-    consecutive = 1
-    for a in adapters:
-        if a + 1 not in adapters:
-            if consecutive == 3:
-                choices.append(2)
-            elif consecutive == 4:
-                choices.append(4)
-            elif consecutive == 5:
-                choices.append(7)
-            consecutive = 1
-        else:
-            consecutive += 1
-
-    result = 1
-    for choice in choices:
-        result *= choice
-
-    print(result)
+    occupied = 0
+    for seatline in seats:
+        for seat in seatline:
+            if seat == "#":
+                occupied += 1
+    print(occupied)
