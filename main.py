@@ -2,199 +2,86 @@
 import re
 import math
 
-seats = []
+directions = {
+    "N": 0,
+    "E": 90,
+    "S": 180,
+    "W": 270
+}
 
 
-def occupiednearby(row, col):
-    count = 0
-    # top
-    if row > 0:
-        if seats[row-1][col] == "#":
-            count += 1
-    # left
-    if col > 0:
-        if seats[row][col-1] == "#":
-            count += 1
-    # bottom
-    if row < len(seats) - 1:
-        if seats[row+1][col] == "#":
-            count += 1
-    # right
-    if col < len(seats[0]) - 1:
-        if seats[row][col+1] == "#":
-            count += 1
-    # top left
-    if row > 0 and col > 0:
-        if seats[row-1][col-1] == "#":
-            count += 1
-    # top right
-    if row > 0 and col < len(seats[0]) - 1:
-        if seats[row-1][col+1] == "#":
-            count += 1
-    # bottom left
-    if row < len(seats) - 1 and col > 0:
-        if seats[row+1][col-1] == "#":
-            count += 1
-    # bottom right
-    if row < len(seats) - 1 and col < len(seats[0]) - 1:
-        if seats[row+1][col+1] == "#":
-            count += 1
-    return count
+def moveto(dir, e, n, l):
+    if dir == "N":
+        n += l
+    elif dir == "E":
+        e += l
+    elif dir == "S":
+        n -= l
+    elif dir == "W":
+        e -= l
+    return e, n
 
-def occupieddiag(row, col):
-    count = 0
-    # top
-    x, y = col, row
-    while y > 0:
-        visible = seats[y-1][x]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            y -= 1
-    # left
-    x, y = col, row
-    while x > 0:
-        visible = seats[y][x-1]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            x -= 1
-    # bottom
-    x, y = col, row
-    while y < len(seats) - 1:
-        visible = seats[y+1][x]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            y += 1
-    # right
-    x, y = col, row
-    while x < len(seats[0]) - 1:
-        visible = seats[y][x+1]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            x += 1
-    # top left
-    x, y = col, row
-    while x > 0 and y > 0:
-        visible = seats[y-1][x-1]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            x -= 1
-            y -= 1
-    # top right
-    x, y = col, row
-    while x < len(seats[0]) - 1 and y > 0:
-        visible = seats[y-1][x+1]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            x += 1
-            y -= 1
-    # bottom left
-    x, y = col, row
-    while x > 0 and y < len(seats) - 1:
-        visible = seats[y+1][x-1]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            x -= 1
-            y += 1
-    # bottom right
-    x, y = col, row
-    while x < len(seats[0]) - 1 and y < len(seats) - 1:
-        visible = seats[y+1][x+1]
-        if visible == "#":
-            count += 1
-            break
-        elif visible == "L":
-            break
-        else:
-            x += 1
-            y += 1
-    return count
+
+def rotate(dir, rot, degs):
+    angle = directions[dir]
+    if rot == "L":
+        angle -= degs
+    elif rot == "R":
+        angle += degs
+    while angle < 0:
+        angle += 360
+    while angle >= 360:
+        angle -= 360
+    for d in directions:
+        if directions[d] == angle:
+            return d
+
+
+def rotatee(dir, rot):
+    d = ""
+    if dir == "N":
+        if rot == "L":
+            d = "W"
+        elif rot == "R":
+            d = "E"
+    elif dir == "E":
+        if rot == "L":
+            d = "N"
+        elif rot == "R":
+            d = "S"
+    elif dir == "S":
+        if rot == "L":
+            d = "E"
+        elif rot == "R":
+            d = "W"
+    elif dir == "W":
+        if rot == "L":
+            d = "S"
+        elif rot == "R":
+            d = "N"
+    return d
 
 
 if __name__ == '__main__':
     file = open("inputs.txt", "r")
     lines = file.readlines()
 
+    instructions = []
+
     for line in lines:
-        seats.append(re.findall(r'[\.L]', line))
+        ins = re.match(r'([NSEWLRF])(\d+)', line)
+        instructions.append([ins.group(1), int(ins.group(2))])
 
-    toChange = []
-    while True:
-        for i in range(len(seats)):
-            for j in range(len(seats[i])):
-                if seats[i][j] == "L" and occupiednearby(i, j) == 0:
-                    toChange.append([i, j])
-                elif seats[i][j] == "#" and occupiednearby(i, j) >= 4:
-                    toChange.append([i, j])
-        if len(toChange) > 0:
-            for c in toChange:
-                if seats[c[0]][c[1]] == "L":
-                    seats[c[0]][c[1]] = "#"
-                elif seats[c[0]][c[1]] == "#":
-                    seats[c[0]][c[1]] = "L"
-            toChange = []
+    east = north = 0
+    currdir = "E"
+    for instruction in instructions:
+        dir, val = instruction[0], instruction[1]
+        if dir == "N" or dir == "E" or dir == "S" or dir == "W":
+            east, north = moveto(dir, east, north, val)
         else:
-            break
+            if dir == "L" or dir == "R":
+                currdir = rotate(currdir, dir, val)
+                continue
+            east, north = moveto(currdir, east, north, val)
 
-    occupied = 0
-    for seatline in seats:
-        for seat in seatline:
-            if seat == "#":
-                occupied += 1
-    print(occupied)
-
-    seats = []
-    toChange = []
-    for line in lines:
-        seats.append(re.findall(r'[\.L]', line))
-
-    while True:
-        for i in range(len(seats)):
-            for j in range(len(seats[i])):
-                if seats[i][j] == "L" and occupieddiag(i, j) == 0:
-                    toChange.append([i, j])
-                elif seats[i][j] == "#" and occupieddiag(i, j) >= 5:
-                    toChange.append([i, j])
-        if len(toChange) > 0:
-            for c in toChange:
-                if seats[c[0]][c[1]] == "L":
-                    seats[c[0]][c[1]] = "#"
-                elif seats[c[0]][c[1]] == "#":
-                    seats[c[0]][c[1]] = "L"
-            toChange = []
-        else:
-            break
-
-    occupied = 0
-    for seatline in seats:
-        for seat in seatline:
-            if seat == "#":
-                occupied += 1
-    print(occupied)
+    print(abs(east) + abs(north))
