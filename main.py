@@ -35,31 +35,26 @@ def rotate(dir, rot, degs):
     for d in directions:
         if directions[d] == angle:
             return d
+# centro in 2,3
+# diffeast = 2, diffnorth = 3
+# 4,6 > 5,1
+# diffeast = -2, diffnorth = -3
+# 0,0 > -1,2
 
 
-def rotatee(dir, rot):
-    d = ""
-    if dir == "N":
-        if rot == "L":
-            d = "W"
-        elif rot == "R":
-            d = "E"
-    elif dir == "E":
-        if rot == "L":
-            d = "N"
-        elif rot == "R":
-            d = "S"
-    elif dir == "S":
-        if rot == "L":
-            d = "E"
-        elif rot == "R":
-            d = "W"
-    elif dir == "W":
-        if rot == "L":
-            d = "S"
-        elif rot == "R":
-            d = "N"
-    return d
+def rotatewaypoint(dir, degs, east, north, eastship, northship):
+    diffeast = east - eastship
+    diffnorth = north - northship
+    if dir == "L":
+        degs = 0 - degs
+    if degs == 90:
+        return eastship + diffnorth, northship - diffeast
+    elif degs == 180:
+        return eastship - diffnorth, northship - diffeast
+    elif degs == 270:
+        return eastship - diffnorth, northship + diffeast
+    else:
+        return east, north
 
 
 if __name__ == '__main__':
@@ -85,3 +80,20 @@ if __name__ == '__main__':
             east, north = moveto(currdir, east, north, val)
 
     print(abs(east) + abs(north))
+
+    # s = ship, w = waypoint
+    easts = norths = 0
+    eastw, northw = 10, 1
+    for instruction in instructions:
+        dir, val = instruction[0], instruction[1]
+        if dir == "N" or dir == "E" or dir == "S" or dir == "W":
+            eastw, northw = moveto(dir, eastw, northw, val)
+        elif dir == "R" or dir == "L":
+            eastw, northw = rotatewaypoint(dir, val, eastw, northw, easts, norths)
+        elif dir == "F":
+            eastdiff, northdiff = eastw - easts, northw - norths
+            eastw += eastdiff * val
+            northw += northdiff * val
+            easts += eastdiff * val
+            norths += northdiff * val
+    print(abs(easts) + abs(norths))
