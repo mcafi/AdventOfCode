@@ -1,6 +1,8 @@
-# This is a sample Python script.
+# DAY 12
+# Part 1: calculate the position of the ship moving it according to instructions
+# Part 2: calculate the positions of the ship moving the waypoint according to instructions
+
 import re
-import math
 
 directions = {
     "N": 0,
@@ -51,15 +53,15 @@ def rotatewaypoint(dir, degs, east, north):
 
 
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("day12.txt", "r")
     lines = file.readlines()
 
     instructions = []
-
     for line in lines:
         ins = re.match(r'([NSEWLRF])(\d+)', line)
         instructions.append([ins.group(1), int(ins.group(2))])
 
+    # Part 1
     east = north = 0
     currdir = "E"
     for instruction in instructions:
@@ -71,10 +73,9 @@ if __name__ == '__main__':
                 currdir = rotate(currdir, dir, val)
                 continue
             east, north = moveto(currdir, east, north, val)
-
     print(abs(east) + abs(north))
 
-    # w = waypoint
+    # Part 2
     east = north = 0
     eastway, northway = 10, 1
     for instruction in instructions:
