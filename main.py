@@ -2,88 +2,27 @@
 import re
 import math
 
-directions = {
-    "N": 0,
-    "E": 90,
-    "S": 180,
-    "W": 270
-}
-
-
-def moveto(dir, e, n, l):
-    if dir == "N":
-        n += l
-    elif dir == "E":
-        e += l
-    elif dir == "S":
-        n -= l
-    elif dir == "W":
-        e -= l
-    return e, n
-
-
-def rotate(dir, rot, degs):
-    angle = directions[dir]
-    if rot == "L":
-        angle -= degs
-    elif rot == "R":
-        angle += degs
-    while angle < 0:
-        angle += 360
-    while angle >= 360:
-        angle -= 360
-    for d in directions:
-        if directions[d] == angle:
-            return d
-
-
-def rotatewaypoint(dir, degs, east, north):
-    if dir == "L":
-        degs = 360 - degs
-    if degs == 90:
-        return north, -east
-    elif degs == 180:
-        return -east, -north
-    elif degs == 270:
-        return -north, east
-    else:
-        return east, north
-
 
 if __name__ == '__main__':
     file = open("inputs.txt", "r")
     lines = file.readlines()
 
-    instructions = []
+    timestamp = int(lines[0])
+    buses = {}
+    for n in re.findall(r'\d+', lines[1]):
+        buses[int(n)] = 0
 
-    for line in lines:
-        ins = re.match(r'([NSEWLRF])(\d+)', line)
-        instructions.append([ins.group(1), int(ins.group(2))])
+    for bus in buses:
+        while buses[bus] < timestamp:
+            buses[bus] += bus
 
-    east = north = 0
-    currdir = "E"
-    for instruction in instructions:
-        dir, val = instruction[0], instruction[1]
-        if dir == "N" or dir == "E" or dir == "S" or dir == "W":
-            east, north = moveto(dir, east, north, val)
-        else:
-            if dir == "L" or dir == "R":
-                currdir = rotate(currdir, dir, val)
-                continue
-            east, north = moveto(currdir, east, north, val)
+    print(buses)
+    min = list(buses.keys())[0]
+    wait = buses[list(buses.keys())[0]] - timestamp
 
-    print(abs(east) + abs(north))
+    for bus in buses:
+        if buses[bus] - timestamp < wait:
+            min = bus
+            wait = buses[bus] - timestamp
 
-    # w = waypoint
-    east = north = 0
-    eastway, northway = 10, 1
-    for instruction in instructions:
-        dir, val = instruction[0], instruction[1]
-        if dir == "N" or dir == "E" or dir == "S" or dir == "W":
-            eastway, northway = moveto(dir, eastway, northway, val)
-        elif dir == "R" or dir == "L":
-            eastway, northway = rotatewaypoint(dir, val, eastway, northway)
-        elif dir == "F":
-            east += eastway * val
-            north += northway * val
-    print(abs(east) + abs(north))
+    print(min * wait)
