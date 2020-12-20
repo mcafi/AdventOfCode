@@ -1,11 +1,14 @@
-# This is a sample Python script.
+# DAY 13
+# Part 1: find the lowest wait but at a given time
+# Part 2: find the time where all the bus start subsequently
+
 import re
-import math
 
 if __name__ == '__main__':
-    file = open("day13.txt", "r")
+    file = open("./day13.txt", "r")
     lines = file.readlines()
 
+    # Part 1
     timestamp = int(lines[0])
     buses = {}
     for n in re.findall(r'\d+', lines[1]):
@@ -25,8 +28,10 @@ if __name__ == '__main__':
 
     print(minbus * wait)
 
+    # Part 2
     buses = {}
     diff = 0
+
     for b in re.findall(r'(\d+|x)', lines[1]):
         if b == 'x':
             diff += 1
@@ -34,9 +39,11 @@ if __name__ == '__main__':
         else:
             buses[int(b)] = diff
             diff += 1
+
     timestamp = list(buses.keys())[0]
     step = 1
     found = 0
+
     while True:
         nextbus = list(buses.keys())[found]
         if (timestamp + buses[nextbus]) % nextbus == 0:
@@ -45,4 +52,5 @@ if __name__ == '__main__':
             if found == len(buses):
                 break
         timestamp += step
+
     print(timestamp)
