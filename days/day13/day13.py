@@ -3,7 +3,7 @@ import re
 import math
 
 if __name__ == '__main__':
-    file = open("inputs.txt", "r")
+    file = open("day13.txt", "r")
     lines = file.readlines()
 
     timestamp = int(lines[0])
